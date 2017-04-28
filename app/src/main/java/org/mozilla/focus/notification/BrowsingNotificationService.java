@@ -69,7 +69,10 @@ public class BrowsingNotificationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        switch (intent.getAction()) {
+        // intent can be null if "this service's process is killed while it is started", and the System
+        // restarts our service, see the docs for Service.START_STICKY:
+        // https://developer.android.com/reference/android/app/Service.html#START_STICKY
+        switch (intent != null ? intent.getAction() : ACTION_FOREGROUND) {
             case ACTION_START:
                 active = true;
                 showNotification();
