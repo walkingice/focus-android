@@ -7,10 +7,9 @@ package org.mozilla.focus.webkit;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.net.http.SslError;
 import android.os.AsyncTask;
 import android.support.annotation.WorkerThread;
-import android.webkit.SslErrorHandler;
+import android.util.Log;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -64,6 +63,9 @@ public class TrackingProtectionWebViewClient extends WebViewClient {
         return blockingEnabled;
     }
 
+    static int MATCH_COUNT = 0;
+    static long MATCH_TOTAL_TIME = 0;
+
     @Override
     public WebResourceResponse shouldInterceptRequest(final WebView view, final WebResourceRequest request) {
         if (!blockingEnabled) {
@@ -99,10 +101,21 @@ public class TrackingProtectionWebViewClient extends WebViewClient {
 
         // Don't block the main frame from being loaded. This also protects against cases where we
         // open a link that redirects to another app (e.g. to the play store).
-        final Uri pageUri = Uri.parse(currentPageURL);
-        if ((!request.isForMainFrame()) &&
-                matcher.matches(resourceUri, pageUri)) {
-            return new WebResourceResponse(null, null, null);
+        if ((!request.isForMainFrame())) {
+            final Uri pageUri = Uri.parse(currentPageURL);
+
+            final long startTime = System.nanoTime();
+
+            final boolean matches = matcher.matches(resourceUri, pageUri);
+
+            MATCH_TOTAL_TIME += System.nanoTime() - startTime;
+            MATCH_COUNT++;
+
+            Log.d("URLMATCHTIME", "MATCH_TOTAL_TIME=" + MATCH_TOTAL_TIME + " matches=" + MATCH_COUNT);
+
+            if (matches) {
+                return new WebResourceResponse(null, null, null);
+            }
         }
 
         return super.shouldInterceptRequest(view, request);
