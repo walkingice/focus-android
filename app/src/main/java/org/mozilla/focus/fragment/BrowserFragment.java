@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +31,8 @@ import android.webkit.CookieManager;
 import android.webkit.URLUtil;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.mozilla.focus.R;
@@ -138,6 +142,7 @@ public class BrowserFragment extends WebFragment implements View.OnClickListener
         }
 
         lockView = view.findViewById(R.id.lock);
+        lockView.setOnClickListener(this);
 
         progressView = (AnimatedProgressBar) view.findViewById(R.id.progress);
 
@@ -577,6 +582,7 @@ public class BrowserFragment extends WebFragment implements View.OnClickListener
                 break;
             }
 
+<<<<<<< ba7582a52db5e0849f32528dce4a03ed5e9c39a6
             case R.id.customtab_close: {
                 erase();
                 getActivity().finish();
@@ -587,7 +593,40 @@ public class BrowserFragment extends WebFragment implements View.OnClickListener
 
             default:
                 throw new IllegalArgumentException("Unhandled menu item in BrowserFragment");
+=======
+            case R.id.lock: {
+                final IWebView iWebView = getWebView();
+                if (iWebView != null) {
+                    showSslCertInfo(view, iWebView);
+                }
+
+                break;
+            }
         }
+    }
+
+    private static void showSslCertInfo(final @NonNull View lockView, final @NonNull IWebView iWebView) {
+        final IWebView.SslCertificate certificate = iWebView.getSiteCertificate();
+        if (certificate == null) {
+            throw new IllegalStateException("LockView visible and clicked for non SSL site");
+>>>>>>> Add SSL doorhanger (#454)
+        }
+
+        final LayoutInflater inflater = LayoutInflater.from(lockView.getContext());
+        final View content = inflater.inflate(R.layout.doorhanger_ssl, null);
+
+        ((TextView) content.findViewById(R.id.sitename)).setText(certificate.issuedTo);
+        final TextView verifiedBy = (TextView) content.findViewById(R.id.verifiedby);
+        final String verifiedByText = lockView.getResources().getString(R.string.ssl_verifiedby, certificate.issuedBy);
+        verifiedBy.setText(verifiedByText);
+
+        final PopupWindow popupWindow = new PopupWindow(lockView.getContext());
+        popupWindow.setContentView(content);
+        popupWindow.setFocusable(true);
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        final int xOffset = ViewUtils.isRTL(lockView) ? -lockView.getWidth() : 0;
+        popupWindow.showAsDropDown(lockView, xOffset, -(lockView.getHeight() + lockView.getPaddingBottom()));
     }
 
     private void updateToolbarButtonStates() {

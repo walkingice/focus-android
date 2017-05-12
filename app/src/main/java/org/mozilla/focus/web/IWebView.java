@@ -6,6 +6,8 @@
 package org.mozilla.focus.web;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 public interface IWebView {
     class HitTarget {
@@ -28,6 +30,16 @@ public interface IWebView {
             this.linkURL = linkURL;
             this.isImage = isImage;
             this.imageURL = imageURL;
+        }
+    }
+
+    class SslCertificate {
+        public final @NonNull String issuedTo;
+        public final @NonNull String issuedBy;
+
+        public SslCertificate(final @NonNull String issuedTo, final @NonNull String issuedBy) {
+            this.issuedTo = issuedTo;
+            this.issuedBy = issuedBy;
         }
     }
 
@@ -83,4 +95,6 @@ public interface IWebView {
     void restoreWebviewState(Bundle savedInstanceState);
 
     void onSaveInstanceState(Bundle outState);
+
+    @Nullable SslCertificate getSiteCertificate();
 }

@@ -32,4 +32,6 @@
     <color name="snackbarTextColor">#ffffffff</color>
 
     <color name="searchHintTextColor">#ffffffff</color>
+
+    <color name="affirmative_green">#6FBE4A</color>
 </resources>

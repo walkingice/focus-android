@@ -187,5 +187,11 @@ public class WebViewProvider {
         public boolean canGoBack() {
             return canGoBack;
         }
+
+        @Nullable
+        @Override
+        public SslCertificate getSiteCertificate() {
+            return null;
+        }
     }
 }

@@ -275,4 +275,9 @@ be temporary, and you can try again later.</li>
 
     <!-- This is a warning shown in the browser's context menu (when long pressing an image). -->
     <string name="contextmenu_image_warning"><![CDATA[Saved and shared images <b>will not be deleted</b> when you erase Firefox Focus history.]]></string>
+
+    <!-- Label used to show who issued an SSL certificate, e.g. "Verfied by: Let's Encrypt".
+         This is shown when clicking on the lock icon in the toolbar for https sites. -->
+    <string name="ssl_verifiedby">Verified by: %1$s</string>
+    <string name="ssl_secureconnection">Secure Connection</string>
 </resources>
