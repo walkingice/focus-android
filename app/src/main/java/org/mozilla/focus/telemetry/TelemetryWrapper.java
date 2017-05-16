@@ -58,6 +58,7 @@ public final class TelemetryWrapper {
         private static final String OPEN = "open";
         private static final String INTENT_URL = "intent_url";
         private static final String TEXT_SELECTION_INTENT = "text_selection_intent";
+        private static final String SAVE = "save";
     }
 
     private static class Object {
@@ -260,6 +261,10 @@ public final class TelemetryWrapper {
 
     public static void shareImageEvent() {
         TelemetryEvent.create(Category.ACTION, Method.SHARE, Object.BROWSER_CONTEXTMENU, Value.IMAGE).queue();
+    }
+
+    public static void saveImageEvent() {
+        TelemetryEvent.create(Category.ACTION, Method.SAVE, Object.BROWSER_CONTEXTMENU, Value.IMAGE).queue();
     }
 
     public static void copyLinkEvent() {
