@@ -1,5 +1,6 @@
 package org.mozilla.focus.web;
 
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
@@ -60,6 +61,28 @@ public class CustomTabConfigTest {
     }
 
     @Test
+    public void menuTest() throws Exception {
+        final CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
+        final PendingIntent pendingIntent = PendingIntent.getActivity(null, 0, null, 0);
+
+        builder.addMenuItem("menuitem1", pendingIntent);
+        builder.addMenuItem("menuitem2", pendingIntent);
+        // We can only handle menu items with an actual PendingIntent, other ones should be ignored:
+        builder.addMenuItem("menuitemIGNORED", null);
+
+        final CustomTabsIntent customTabsIntent = builder.build();
+
+        final CustomTabConfig config = CustomTabConfig.parseCustomTabIntent(new SafeIntent(customTabsIntent.intent));
+
+        assertEquals("Menu should contain 2 items", 2, config.menuItems.size());
+        final String s = config.menuItems.get(0).name;
+        assertEquals("Unexpected menu item",
+                "menuitem1", config.menuItems.get(0).name);
+        assertEquals("Unexpected menu item",
+                "menuitem2", config.menuItems.get(1).name);
+    }
+
+    @Test
     public void malformedExtras() throws Exception {
         final CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
 
@@ -94,7 +117,6 @@ public class CustomTabConfigTest {
         // And we don't have any data:
         assertNull(c.actionButtonConfig);
     }
-
 
     @Test
     public void malformedActionButtonConfig() throws Exception {
