@@ -13,6 +13,7 @@
 
     <ImageButton
         android:id="@+id/customtab_close"
+        android:tint="?android:colorPrimary"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -22,6 +23,7 @@
 
     <ImageView
         android:id="@+id/lock"
+        android:tint="?android:colorPrimary"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_gravity="center_vertical"
@@ -49,7 +51,6 @@
         android:layout_marginEnd="8dp"
         android:maxLines="1"
         android:singleLine="true"
-        android:textColor="#ffffff"
         android:textSize="15sp" />
 
     <!-- The contentDescription is supplied by other applications in the Custom Tab Intent, and
@@ -69,6 +70,7 @@
 
     <ImageButton
         android:id="@+id/menu"
+        android:tint="?android:colorPrimary"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"

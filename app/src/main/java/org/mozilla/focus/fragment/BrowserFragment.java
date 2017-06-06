@@ -18,12 +18,15 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -121,6 +124,14 @@ public class BrowserFragment extends WebFragment implements View.OnClickListener
 
         final View view = inflater.inflate(R.layout.fragment_browser, container, false);
 
+        if (BrowsingSession.getInstance().isCustomTab()) {
+            final ViewGroup toolbarContainer = (ViewGroup) view.findViewById(R.id.toolbar_container);
+            final int styleRes = getCustomTabTheme();
+            final Context themed = new ContextThemeWrapper(getContext(), styleRes);
+            toolbarContainer.removeAllViews();
+            View.inflate(themed, R.layout.toolbar, toolbarContainer);
+        }
+
         urlView = (TextView) view.findViewById(R.id.display_url);
         updateURL(getInitialUrl());
 
@@ -166,6 +177,21 @@ public class BrowserFragment extends WebFragment implements View.OnClickListener
         urlView.setOnClickListener(this);
     }
 
+    private int getCustomTabTheme() {
+        final CustomTabConfig customTabConfig = BrowsingSession.getInstance().getCustomTabConfig();
+        @ColorInt
+        final int toolbarColor = (customTabConfig.toolbarColor != null)
+                ? customTabConfig.toolbarColor
+                : Color.WHITE;
+        @ColorInt
+        final int textColor = ColorUtils.getReadableTextColor(toolbarColor);
+        @StyleRes
+        final int styleRes = (textColor == Color.BLACK)
+                ? R.style.CustomTabLightTheme
+                : R.style.CustomTabDarkTheme;
+        return styleRes;
+    }
+
     private void initialiseCustomTabUi(final @NonNull View view) {
         final CustomTabConfig customTabConfig = BrowsingSession.getInstance().getCustomTabConfig();
 
@@ -184,9 +210,8 @@ public class BrowserFragment extends WebFragment implements View.OnClickListener
         final View toolbar = view.findViewById(R.id.urlbar);
         if (customTabConfig.toolbarColor != null) {
             toolbar.setBackgroundColor(customTabConfig.toolbarColor);
-
             textColor = ColorUtils.getReadableTextColor(customTabConfig.toolbarColor);
-            urlView.setTextColor(textColor);
+            //urlView.setTextColor(textColor);
         } else {
             textColor = Color.WHITE;
         }
@@ -238,11 +263,11 @@ public class BrowserFragment extends WebFragment implements View.OnClickListener
 
         // We need to tint some icons.. We already tinted the close button above. Let's tint our other icons too.
         final Drawable wrappedLock = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_lock, view.getContext().getTheme()));
-        DrawableCompat.setTint(wrappedLock, textColor);
+        //DrawableCompat.setTint(wrappedLock, textColor);
         lockView.setImageDrawable(wrappedLock);
 
         final Drawable wrappedMenu = DrawableCompat.wrap(getResources().getDrawable(R.drawable.ic_menu, view.getContext().getTheme()));
-        DrawableCompat.setTint(wrappedMenu, textColor);
+        //DrawableCompat.setTint(wrappedMenu, textColor);
         menuView.setImageDrawable(wrappedMenu);
     }
 
